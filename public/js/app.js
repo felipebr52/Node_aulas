@@ -60,8 +60,21 @@ form.addEventListener('submit',(evento)=>{
 })
 
 lista.addEventListener('click',function(e){
+    const liClicado = e.target.closest('li');
+    if(!liClicado) return;
+    const id = liClicado.getAttribute("data-id");''
     console.log(e.target);
-
+    if(e.target.closest(".editar")){
+       fetch(`${apiurl}/${id}`)
+       .then((res)=> res.json()).then((dados)=> {
+        const dataFormatada = new Date(dados.data_conclusao).toISOString().split("T")[0];
+        form.titulo.value = dados.titulo;
+        form.descricao.value = dados.descricao;
+        form.data_conclusao.value = dataFormatada;
+        form.status_tarefa.checked = dados.status_tarefa === 1 ? true : false;
+        form.setAttribute("data-editing-id", dados.id);
+       });
+    }
 })
 
 function criarTarefaNova(tarefa){
